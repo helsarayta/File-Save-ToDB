@@ -1,5 +1,6 @@
 package com.heydiecode.filebase64db;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +13,7 @@ import java.util.Base64;
 @SpringBootApplication
 @RestController
 @RequestMapping("upload/")
+@Slf4j
 public class FileencodedbApplication {
 
 	@Autowired
@@ -25,10 +27,16 @@ public class FileencodedbApplication {
 	public String uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             byte[] fileBytes = file.getBytes();
+			log.info("content => {}", file.getContentType());
+			log.info("original => {}", file.getOriginalFilename());
+			log.info("inputstream => {}", file.getInputStream());
+			log.info("name => {}", file.getName());
+			log.info("resource => {}", file.getResource());
+
 			byte[] encodeFile = Base64.getEncoder().encode(fileBytes);
 
 			File saveFile  = new File();
-			saveFile.setFileName("TEST 1");
+			saveFile.setFileName(file.getOriginalFilename());
 			saveFile.setFileEncode(encodeFile);
 
 			fileRepositories.save(saveFile);
